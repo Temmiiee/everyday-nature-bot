@@ -42,10 +42,10 @@ async function postImage() {
             text,
             embed: {
                 $type: 'app.bsky.embed.images',
-                image: {
+                images: [{
                     uri: image.url,
                     alt: image.description,
-                },
+                }],
             },
         });
 
