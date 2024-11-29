@@ -41,7 +41,7 @@ async function postImage() {
         await agent.post({
             text,
             embed: {
-                $type: 'app.bsky.embed.image',
+                $type: 'app.bsky.embed.images',
                 image: {
                     uri: image.url,
                     alt: image.description,
