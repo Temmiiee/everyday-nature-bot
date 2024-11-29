@@ -1,7 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
 const { BskyAgent } = require('@atproto/api');
-const schedule = require('node-schedule');
 
 const agent = new BskyAgent({ service: 'https://bsky.social' });
 
@@ -57,7 +56,4 @@ async function postImage() {
   }
 }
 
-schedule.scheduleJob('0 9 * * *', () => { // Tous les jours à 9h
-  console.log('Lancement du bot "Everyday Nature"...');
-  postImage();
-});
+postImage();
