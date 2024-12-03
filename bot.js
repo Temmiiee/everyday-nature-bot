@@ -69,8 +69,9 @@ async function postImage() {
         const blob = await uploadImage(image.url);
         if (!blob) return;
 
-        // Prepare post content
-        const text = `🌿 ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}`;
+        // Prepare post content with hashtags
+        const hashtags = '#nature #photography #landscape #naturephotography #photooftheday';
+        const text = `🌿 ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${hashtags}`;
 
         // Post on Bluesky
         await agent.post({
