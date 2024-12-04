@@ -1,8 +1,8 @@
-require('dotenv').config();
-const axios = require('axios');
-const { BskyAgent } = require('@atproto/api');
+import 'dotenv/config';
+import axios from 'axios';
+import { AtpAgent } from '@atproto/api';
 
-const agent = new BskyAgent({ service: 'https://bsky.social' });
+const agent = new AtpAgent({ service: 'https://bsky.social' });
 
 const UNSPLASH_URL = 'https://api.unsplash.com/photos/random';
 const IMAGE_ALT_TEXT = 'Beautiful nature image';
@@ -41,7 +41,7 @@ async function uploadImage(imageUrl) {
         }
 
         // Upload to Bluesky
-        const uploadResponse = await agent.api.com.atproto.repo.uploadBlob(imgBytes, {
+        const uploadResponse = await agent.com.atproto.repo.uploadBlob(imgBytes, {
             encoding: response.headers['content-type'],
         });
 
@@ -73,9 +73,24 @@ async function postImage() {
         const hashtags = '#nature #photography #landscape #naturephotography #photooftheday';
         const text = `🌿 ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${hashtags}`;
 
+        // Create text facets for hashtags
+        const facets = hashtags.split(' ').map(tag => ({
+            index: {
+                start: text.indexOf(tag),
+                end: text.indexOf(tag) + tag.length,
+                byteStart: Buffer.byteLength(text.slice(0, text.indexOf(tag))),
+                byteEnd: Buffer.byteLength(text.slice(0, text.indexOf(tag) + tag.length)),
+            },
+            features: [{
+                $type: 'app.bsky.richtext.facet#tag',
+                tag: tag.slice(1), // Remove the '#' character
+            }],
+        }));
+
         // Post on Bluesky
         await agent.post({
             text,
+            facets,
             embed: {
                 $type: 'app.bsky.embed.images',
                 images: [{
