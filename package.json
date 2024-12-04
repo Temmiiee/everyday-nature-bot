@@ -1,19 +1,15 @@
 {
   "name": "everyday-nature-bot",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "bot.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bot.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@atproto/api": "^0.13.18",
-    "axios": "^1.7.8",
-    "dotenv": "^16.4.5",
-    "node-schedule": "^2.1.1"
+    "@atproto/api": "^1.0.0",
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0"
   }
 }
