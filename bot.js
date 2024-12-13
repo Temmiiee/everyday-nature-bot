@@ -17,10 +17,11 @@ async function fetchNatureImage() {
 
         const image = response.data;
         return {
-            url: image.urls.regular, // Use a smaller size URL
+            url: image.urls.regular,
             description: image.alt_description || 'Beautiful nature image',
             photographer: image.user.name,
             photographerLink: image.user.links.html,
+            tags: image.tags.map(tag => `#${tag.title}`),
         };
     } catch (error) {
         console.error('Error fetching the image:', error.response?.data || error.message);
@@ -52,6 +53,23 @@ async function uploadImage(imageUrl) {
     }
 }
 
+// Helper function to get random elements from an array
+function getRandomElements(arr, count) {
+    const shuffled = arr.slice(0);
+    let i = arr.length;
+    const min = i - count;
+    let temp, index;
+
+    while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+
+    return shuffled.slice(min);
+}
+
 // Post an image with text to Bluesky
 async function postImage() {
     try {
@@ -69,12 +87,14 @@ async function postImage() {
         const blob = await uploadImage(image.url);
         if (!blob) return;
 
-        // Prepare post content with hashtags
-        const hashtags = '#nature #photography #landscape #naturephotography #photooftheday';
-        const text = `🌿 ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${hashtags}`;
+        // Prepare post content with tags from Unsplash
+        const words = ['Amazing', 'Beautiful', 'Stunning', 'Gorgeous', 'Breathtaking', 'Incredible', 'Mesmerizing', 'Spectacular', 'Wonderful', 'Astonishing'];
+        const randomWord = words[Math.floor(Math.random() * words.length)];
+        const randomHashtags = getRandomElements(image.tags, Math.floor(Math.random() * 4) + 2).join(' ');
+        const text = `🌿 ${randomWord} ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${randomHashtags}`;
 
         // Create text facets for hashtags
-        const facets = hashtags.split(' ').map(tag => ({
+        const facets = randomHashtags.split(' ').map(tag => ({
             index: {
                 start: text.indexOf(tag),
                 end: text.indexOf(tag) + tag.length,
@@ -83,7 +103,7 @@ async function postImage() {
             },
             features: [{
                 $type: 'app.bsky.richtext.facet#tag',
-                tag: tag.slice(1), // Remove the '#' character
+                tag: tag.slice(1),
             }],
         }));
 
