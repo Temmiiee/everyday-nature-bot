@@ -90,11 +90,20 @@ async function postImage() {
         // Prepare post content with tags from Unsplash
         const words = ['Amazing', 'Beautiful', 'Stunning', 'Gorgeous', 'Breathtaking', 'Incredible', 'Mesmerizing', 'Spectacular', 'Wonderful', 'Astonishing'];
         const randomWord = words[Math.floor(Math.random() * words.length)];
-        const randomHashtags = getRandomElements(image.tags, Math.floor(Math.random() * 4) + 2).join(' ');
-        const text = `🌿 ${randomWord} ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${randomHashtags}`;
+        
+        // Select two random hashtags from the image
+        const randomHashtagsFromImage = getRandomElements(image.tags, 2).join(' ');
+        
+        // Add additional hashtags
+        const additionalHashtags = '#Nature #photography #photooftheday';
+        
+        // Combine all hashtags
+        const allHashtags = `${randomHashtagsFromImage} ${additionalHashtags}`;
+        
+        const text = `🌿 ${randomWord} ${image.description}\n\nPhoto by ${image.photographer} 🌍\n${image.photographerLink}\n\n${allHashtags}`;
 
         // Create text facets for hashtags
-        const facets = randomHashtags.split(' ').map(tag => ({
+        const facets = allHashtags.split(' ').map(tag => ({
             index: {
                 start: text.indexOf(tag),
                 end: text.indexOf(tag) + tag.length,
